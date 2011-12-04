@@ -1,5 +1,9 @@
 var _ = require('common/util');
 var app = this;
+var ui = require('ui');
+var TextView = ui.TextView;
+
+var content = null;
 
 _.extend(exports, {
 	':load': function() {
@@ -7,10 +11,16 @@ _.extend(exports, {
 
 		var view = this;
 
-		view.get('textJudul').on('submit', function() {
-			console.log('Data dari textJudul : '+view.get('textJudul').value());
-		//	view.get('result').label(view.get('textJudul').value());
+		content = new TextView({
+			'style': {
+				width: 'fill-parent',
+				height: 'wrap-content'
+			}
+		});
 
+		view.get('textJudul').on('submit', function() {
+			console.log('Data dari textJudul : ' + view.get('textJudul').value());
+			//	view.get('result').label(view.get('textJudul').value());
 			app.msg('getBuku', {
 				text: view.get('textJudul').value()
 			});
@@ -21,9 +31,20 @@ _.extend(exports, {
 
 			if (action === 'getBuku') {
 				console.log(data.text);
-				view.get('result').label(data.text);
+				//	view.get('result').label(data.text);
+				//var i = 0;
+				//for (i = 0; i < 9; i++) {
+				//	content.label(data.text);
+				//
+				//}
+				content.label(data.text);
+
 			}
 		});
+		view.add(content);
+
+
+		//view.add(this);
 	},
 
 	':resized': function(width, height) {
@@ -33,7 +54,7 @@ _.extend(exports, {
 	':keypress': function(key) {
 		console.log('Key press: ' + key);
 		this.get('textJudul').emit('keypress', key);
-		
+
 	},
 
 	':active': function() {

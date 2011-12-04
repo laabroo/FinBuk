@@ -28,7 +28,7 @@
 		}
 	},
 
-	{
+	/*{
 
 		"name": "result",
 		"control": "TextView",
@@ -40,6 +40,6 @@
 
 		}
 	}
-
+	*/
 	]
 }
