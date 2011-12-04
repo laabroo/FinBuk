@@ -1,0 +1,45 @@
+{
+	"style": {
+		"background-color": "white",
+		"border": 10
+	},
+
+	"contents": [{
+		"name": "title",
+		"control": "TextView",
+		"label": "FinBuk",
+		"style": {
+			"color": "black",
+			"width": "fill-parent",
+			"height": "wrap-content",
+			"align": "center",
+			"valign": "top",
+			"border": "0 0 10 0"
+		}
+	}, {
+		"name": "textJudul",
+		"control": "InputBox",
+		"label": "Masukan judulnya",
+		"style": {
+			"width": "fill-parent",
+			"height": "wrap-content",
+			"background-color": "#f5fffa",
+			"color": "black"
+		}
+	},
+
+	{
+
+		"name": "result",
+		"control": "TextView",
+		"label": "",
+		"style": {
+			"color": "black",
+			"width": "fill-parent",
+			"height": "fill-parent",
+
+		}
+	}
+
+	]
+}
