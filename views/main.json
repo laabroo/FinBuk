@@ -1,6 +1,6 @@
 {
 	"style": {
-		"background-color": "#A0522D",
+		"background-color": "#5F9EAD",
 		"border": 10
 	},
 
@@ -9,7 +9,7 @@
 		"control": "TextView",
 		"label": "Temukan buku yang anda cari!!",
 		"style": {
-			"color": "#4682B4",
+			"color": "#A52A2A",
 			"width": "fill-parent",
 			"height": "wrap-content",
 			"align": "center",

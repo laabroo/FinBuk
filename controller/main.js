@@ -36,16 +36,18 @@ _.extend(exports, {
 		});
 
 		app.on('message', function(action, data) {
-			console.log(action);
 
 			if (action === 'getBuku') {
 				var i = 1;
+				var temp;
 
-				data.text.forEach(function(item) {
-					var temp;
+				//view.add(temp);
+				var dataArray = [data.text.title];
+				dataArray.forEach(function(item) {
+					console.log('Item : ' + item);
 					if (i % 2 === 0) {
 						temp = new TextView({
-							label: item.text,
+							label: item,
 							style: {
 								color: 'black',
 								width: 'fill-parent',
@@ -53,36 +55,33 @@ _.extend(exports, {
 							}
 
 						});
+
 						temp.on('blur', function() {
 							this.style({
 								'color': 'black',
-								'background-color': 'transparent',
-								'font-weight': 'normal'
+								'font-weight': 'normal',
+								'background-color': 'transparent'
 							});
-
 						});
-
 					} else {
-
 						temp = new TextView({
-							label: item.text,
+							label: item,
 							style: {
 								color: 'black',
 								width: 'fill-parent',
-								'background-color': '#009eff'
+								'background-color': '#5F9EAD'
 							}
 						});
 
 						temp.on('blur', function() {
 							this.style({
 								'color': 'black',
-								'background-color': '#009eff',
+								'background-color': '#5F9EAD',
 								'font-weight': 'normal'
 
 							});
 
 						});
-
 					}
 
 					temp.on('activate', function() {
@@ -95,35 +94,35 @@ _.extend(exports, {
 							'font-weight': 'bold'
 						});
 					});
-					view.add(item.text2, temp);
+					view.add(item, temp);
 					i++;
 				});
 				view.focusItem(1);
-
-
-				//});
+				//end 
 			}
 
-		});
+		console.log(data.text.title, data.text.selfLink, data.text.author);
+
+	});
 
 
 
-	},
+},
 
 
-	':keypress': function(key) {
-		console.log('Key press: ' + key);
-		this.get('textJudul').emit('keypress', key);
+':keypress': function(key) {
+	console.log('Key press: ' + key);
+	this.get('textJudul').emit('keypress', key);
 
-	},
+},
 
-	':active': function() {
-		console.log('View is active');
-	},
+':active': function() {
+	console.log('View is active');
+},
 
-	':inactive': function() {
-		console.log('View is inactive');
-	},
+':inactive': function() {
+	console.log('View is inactive');
+},
 
 focusItem: function(index) {
 	if (this.index !== undefined) {
@@ -136,5 +135,5 @@ focusItem: function(index) {
 	}
 	console.log(index);
 	this.scrollTo(index);
-	}
+}
 });
