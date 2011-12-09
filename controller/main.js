@@ -38,10 +38,10 @@ _.extend(exports, {
 		app.on('message', function(action, data) {
 
 			if (action === 'getBuku') {
+				clearInterval(view.intervalId);
+				delete view.intervalId;
 				var i = 1;
 				var temp;
-
-				//view.add(temp);
 				var dataArray = [data.text.title];
 				dataArray.forEach(function(item) {
 					console.log('Item : ' + item);
@@ -101,39 +101,62 @@ _.extend(exports, {
 				//end 
 			}
 
-		console.log(data.text.title, data.text.selfLink, data.text.author);
+			console.log(data.text.title, data.text.selfLink, data.text.author);
 
-	});
-
-
-
-},
+		});
 
 
-':keypress': function(key) {
-	console.log('Key press: ' + key);
-	this.get('textJudul').emit('keypress', key);
 
-},
+	},
 
-':active': function() {
-	console.log('View is active');
-},
 
-':inactive': function() {
-	console.log('View is inactive');
-},
+	':keypress': function(key) {
+		console.log('Key press: ' + key);
+		this.get('textJudul').emit('keypress', key);
+		if (this.index === undefined) {
+			if (this.size() > 0) {
+				this.focusItem(1);
+			}
+		} else if (key === 'up' || key === 'down') {
+			var next = this.index + (key === 'up' ? -1 : 1);
 
-focusItem: function(index) {
-	if (this.index !== undefined) {
-		this.get(this.index).emit('blur');
+			if (next < 1) {
+				next = 1;
+			} else if (next > (this.size() - 1)) {
+				next = this.size() - 1;
+			}
+
+			if (this.index === next) {
+				return;
+			}
+
+			this.focusItem(next);
+		} else if (key === 'fire') {
+			this.get(this.index).emit('activate');
+		} else if (key === 'back') {
+			console.log('back');
+		}
+
+	},
+
+	':active': function() {
+		console.log('View is active');
+	},
+
+	':inactive': function() {
+		console.log('View is inactive');
+	},
+
+	focusItem: function(index) {
+		if (this.index !== undefined) {
+			this.get(this.index).emit('blur');
+		}
+		this.index = index;
+		this.get(index).emit('focus');
+		if (index === 1) {
+			this.scrollTop(0);
+		}
+		console.log(index);
+		this.scrollTo(index);
 	}
-	this.index = index;
-	this.get(index).emit('focus');
-	if (index === 1) {
-		this.scrollTop(0);
-	}
-	console.log(index);
-	this.scrollTo(index);
-}
 });

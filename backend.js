@@ -35,12 +35,14 @@ app.message(function(client, action, data) {
                         console.log('Title : ' + item.items[c].volumeInfo.title);
                         console.log('Link : ' + item.items[c].selfLink);
                         console.log('Author : ' + item.items[c].volumeInfo.authors[0]);
+                        console.log('Description : ' + item.items[c].volumeInfo.description);
 
-                        client.msg('getBuku', {text :
-                                   {
-                            title: item.items[c].volumeInfo.title,
-                            selfLink: item.items[c].selfLink,
-                            author: item.items[c].volumeInfo.authors[0]
+                        client.msg('getBuku', {
+                            text: {
+                                title: item.items[c].volumeInfo.title,
+                                selfLink: item.items[c].selfLink,
+                                author: item.items[c].volumeInfo.authors[0],
+                                description: item.items[c].volumeInfo.description
                             }
                         });
                     }
