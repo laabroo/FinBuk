@@ -2,8 +2,9 @@ var _ = require('common/util');
 var app = this;
 var ui = require('ui');
 var TextView = ui.TextView;
-
-var content = null;
+//var ListView = require('../lib/ListView').ListView;
+var title = null;
+var author = null;
 
 _.extend(exports, {
 	':load': function() {
@@ -11,7 +12,16 @@ _.extend(exports, {
 
 		var view = this;
 
-		content = new TextView({
+		title = new TextView({
+			'style': {
+				width: 'fill-parent',
+				height: 'wrap-content',
+				'font-weight': 'bold',
+				'font-size': 'small'
+			}
+		});
+
+		author = new TextView({
 			'style': {
 				width: 'fill-parent',
 				height: 'wrap-content'
@@ -20,7 +30,6 @@ _.extend(exports, {
 
 		view.get('textJudul').on('submit', function() {
 			console.log('Data dari textJudul : ' + view.get('textJudul').value());
-			//	view.get('result').label(view.get('textJudul').value());
 			app.msg('getBuku', {
 				text: view.get('textJudul').value()
 			});
@@ -30,26 +39,77 @@ _.extend(exports, {
 			console.log(action);
 
 			if (action === 'getBuku') {
-				console.log(data.text);
-				//	view.get('result').label(data.text);
-				//var i = 0;
-				//for (i = 0; i < 9; i++) {
-				//	content.label(data.text);
-				//
-				//}
-				content.label(data.text);
+				var i = 1;
 
+				data.text.forEach(function(item) {
+					var temp;
+					if (i % 2 === 0) {
+						temp = new TextView({
+							label: item.text,
+							style: {
+								color: 'black',
+								width: 'fill-parent',
+								'background-color': 'transparent'
+							}
+
+						});
+						temp.on('blur', function() {
+							this.style({
+								'color': 'black',
+								'background-color': 'transparent',
+								'font-weight': 'normal'
+							});
+
+						});
+
+					} else {
+
+						temp = new TextView({
+							label: item.text,
+							style: {
+								color: 'black',
+								width: 'fill-parent',
+								'background-color': '#009eff'
+							}
+						});
+
+						temp.on('blur', function() {
+							this.style({
+								'color': 'black',
+								'background-color': '#009eff',
+								'font-weight': 'normal'
+
+							});
+
+						});
+
+					}
+
+					temp.on('activate', function() {
+						//app.setContent('detail', {url: item.url, title: item.title});
+					});
+					temp.on('focus', function() {
+						this.style({
+							'color': 'black',
+							'background-color': '#3682b0',
+							'font-weight': 'bold'
+						});
+					});
+					view.add(item.text2, temp);
+					i++;
+				});
+				view.focusItem(1);
+
+
+				//});
 			}
+
 		});
-		view.add(content);
 
 
-		//view.add(this);
+
 	},
 
-	':resized': function(width, height) {
-		console.log('View was resized to ' + width + 'x' + height);
-	},
 
 	':keypress': function(key) {
 		console.log('Key press: ' + key);
@@ -63,5 +123,18 @@ _.extend(exports, {
 
 	':inactive': function() {
 		console.log('View is inactive');
+	},
+
+focusItem: function(index) {
+	if (this.index !== undefined) {
+		this.get(this.index).emit('blur');
+	}
+	this.index = index;
+	this.get(index).emit('focus');
+	if (index === 1) {
+		this.scrollTop(0);
+	}
+	console.log(index);
+	this.scrollTo(index);
 	}
 });

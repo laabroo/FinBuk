@@ -18,25 +18,22 @@ app.message(function(client, action, data) {
         var url = "https://www.googleapis.com/books/v1/volumes?" + param;
         console.log(url);
         http.get(url, {
-
             type: 'binary'
         }, {
             ok: function(data) {
                 console.log(data);
                 data = JSON.parse(data);
                 log.info(data);
-                var i = 0;
-                for (i = 0; i < 10; i++) {
-                    //.console.log('Nilai i : '+i);                   
+               
+               var i = 0;
+                for (i = 0; i < 10; i++) {         
                     console.log('Judul : ' + data.items[i].volumeInfo.title + '\nAutors : ' + data.items[i].volumeInfo.authors);
                     client.msg('getBuku', {
+                        text: data.items[i].volumeInfo.title,
                         
-                        text: data.items[i].volumeInfo.title
+                        text2: data.items[i].volumeInfo.authors[0]
                     });
                 }
-
-
-
 
             },
             error: function(err) {
