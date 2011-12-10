@@ -42,6 +42,7 @@ _.extend(exports, {
 				delete view.intervalId;
 				var i = 1;
 				var temp;
+				
 				var dataArray = [data.text.title];
 				dataArray.forEach(function(item) {
 					console.log('Item : ' + item);
@@ -85,7 +86,13 @@ _.extend(exports, {
 					}
 
 					temp.on('activate', function() {
-						//app.setContent('detail', {url: item.url, title: item.title});
+						app.setContent('details', {
+							title: data.text.title,
+							thumbnail: data.text.thumbnail,
+							description: data.text.description
+						});
+						
+						console.log('data.text.thumbnail : '+data.text.thumbnail);
 					});
 					temp.on('focus', function() {
 						this.style({
@@ -101,7 +108,7 @@ _.extend(exports, {
 				//end 
 			}
 
-			console.log(data.text.title, data.text.selfLink, data.text.author);
+			console.log(data.text.title, data.text.selfLink, data.text.description, data.text.author, data.text.thumbnail, data.text.smallThumbnail);
 
 		});
 

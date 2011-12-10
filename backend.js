@@ -1,4 +1,9 @@
 // FinBuk -- backend.js
+var ReqLog  = require('blaast/mark').RequestLogger;
+var Scaling = require('blaast/scaling').Scaling;
+var _  = require('underscore');
+var rlog = new ReqLog(app.log);
+var scaling = new Scaling(app.config);
 log.info('Hello from backend bootstrap.');
 var http = require('blaast/simple-http');
 var QS = require('querystring');
@@ -36,13 +41,17 @@ app.message(function(client, action, data) {
                         console.log('Link : ' + item.items[c].selfLink);
                         console.log('Author : ' + item.items[c].volumeInfo.authors[0]);
                         console.log('Description : ' + item.items[c].volumeInfo.description);
+                        console.log('ImageLinks S : ' + item.items[c].volumeInfo.imageLinks.smallThumbnail);
+                        console.log('ImageLinks L : ' + item.items[c].volumeInfo.imageLinks.thumbnail);
 
                         client.msg('getBuku', {
                             text: {
                                 title: item.items[c].volumeInfo.title,
                                 selfLink: item.items[c].selfLink,
                                 author: item.items[c].volumeInfo.authors[0],
-                                description: item.items[c].volumeInfo.description
+                                description: item.items[c].volumeInfo.description,
+                                smallThumbnail: item.items[c].volumeInfo.imageLinks.smallThumbnail,
+                                thumbnail: item.items[c].volumeInfo.imageLinks.thumbnail
                             }
                         });
                     }
@@ -56,6 +65,27 @@ app.message(function(client, action, data) {
 
         });
 
-    }
+    } 
 
+});
+
+
+app.setResourceHandler(function(request, response) {
+    var r = rlog.start(request.id);
+
+    function sendReply(response, error, imageType, data) {
+        if (error) {
+            r.error(error);
+            response.failed();
+        } else {
+            r.done();
+            response.reply(imageType, data);
+        }
+    }
+    
+    scaling.scale(request.id, request.display_width, request.display_height, 'image/jpeg',
+        function(err, data) {
+            sendReply(response, err, 'image/jpeg', data);
+        }
+    );
 });
