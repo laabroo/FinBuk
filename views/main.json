@@ -1,7 +1,8 @@
 {
 	"style": {
-		"background-color": "#5F9EAD",
-		"border": 10
+		"background-color": "#BDB76B",
+		"border": 10,
+		"overflow": true
 	},
 
 	"contents": [{
@@ -17,10 +18,10 @@
 			"border": "0 0 10 0",
 			"font-weight" : "bold"
 		}
-	}, {
+	}
+	, {
 		"name": "textJudul",
 		"control": "InputBox",
-		"label": "Masukan judulnya",
 		"style": {
 			"width": "fill-parent",
 			"height": "wrap-content",

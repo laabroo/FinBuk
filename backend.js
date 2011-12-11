@@ -1,12 +1,13 @@
 // FinBuk -- backend.js
-var ReqLog  = require('blaast/mark').RequestLogger;
-var Scaling = require('blaast/scaling').Scaling;
-var _  = require('underscore');
+var ReqLog = require('blaast/mark').RequestLogger;
+var _ = require('underscore');
 var rlog = new ReqLog(app.log);
-var scaling = new Scaling(app.config);
+var scaling = new(require('blaast/scaling').Scaling)();
 log.info('Hello from backend bootstrap.');
 var http = require('blaast/simple-http');
 var QS = require('querystring');
+var url = require('url');
+
 
 
 app.message(function(client, action, data) {
@@ -29,34 +30,66 @@ app.message(function(client, action, data) {
                 data = JSON.parse(data);
                 log.info(data);
 
-                var array = [data];
-                array.forEach(function(item) {
-                    var c = 0;
-                    var panjang = item.items.length;
-                    console.log('Panjang : ' + item.items.length);
-                    var a = [item.items.authors].length;
-                    console.log('Panjang author : ' + a);
-                    for (c = 0; c < panjang; c++) {
-                        console.log('Title : ' + item.items[c].volumeInfo.title);
-                        console.log('Link : ' + item.items[c].selfLink);
-                        console.log('Author : ' + item.items[c].volumeInfo.authors[0]);
-                        console.log('Description : ' + item.items[c].volumeInfo.description);
-                        console.log('ImageLinks S : ' + item.items[c].volumeInfo.imageLinks.smallThumbnail);
-                        console.log('ImageLinks L : ' + item.items[c].volumeInfo.imageLinks.thumbnail);
+                if (data.totalItems === 0) {
+                    console.log('Buku tidak ditemukan');
+                } else {
 
-                        client.msg('getBuku', {
-                            text: {
-                                title: item.items[c].volumeInfo.title,
-                                selfLink: item.items[c].selfLink,
-                                author: item.items[c].volumeInfo.authors[0],
-                                description: item.items[c].volumeInfo.description,
-                                smallThumbnail: item.items[c].volumeInfo.imageLinks.smallThumbnail,
-                                thumbnail: item.items[c].volumeInfo.imageLinks.thumbnail
+                    var array = [data];
+                    array.forEach(function(item) {
+                        var c = 0;
+                        var panjang = item.items.length;
+                        console.log('Panjang : ' + item.items.length);
+                        var a = [item.items.authors].length;
+                        console.log('Panjang author : ' + a);
+                        for (c = 0; c < panjang; c++) {
+                            console.log('Title : ' + item.items[c].volumeInfo.title);
+                            console.log('Author : ' + item.items[c].volumeInfo.authors[0]);
+                            console.log('Description : ' + item.items[c].volumeInfo.description);
+                            console.log('ImageLinks L : ' + item.items[c].volumeInfo.imageLinks.thumbnail);
+
+                            if (item.items[c].volumeInfo.authors[0] === null) {
+                                client.msg('getBuku', {
+                                    text: {
+                                        title: item.items[c].volumeInfo.title,
+                                        author: 'Penulis tidak diketahui',
+                                        description: item.items[c].volumeInfo.description,
+                                        thumbnail: item.items[c].volumeInfo.imageLinks.thumbnail
+                                    }
+                                });
+                            } else if (item.items[c].volumeInfo.description === null) {
+
+                                client.msg('getBuku', {
+                                    text: {
+                                        title: item.items[c].volumeInfo.title,
+                                        author: item.items[c].volumeInfo.authors[0],
+                                        description: 'Tidak memiliki deskripsi',
+                                        thumbnail: item.items[c].volumeInfo.imageLinks.thumbnail
+                                    }
+                                });
+                            } else if (item.items[c].volumeInfo.imageLinks.thumbnail === null) {
+                                client.msg('getBuku', {
+                                    text: {
+                                        title: item.items[c].volumeInfo.title,
+                                        author: item.items[c].volumeInfo.authors[0],
+                                        description: item.items[c].volumeInfo.description,
+                                        thumbnail: 'http://a1.twimg.com/profile_images/1679096374/ggh.jpg'
+                                    }
+                                });
+                            } else {
+                                client.msg('getBuku', {
+                                    text: {
+                                        title: item.items[c].volumeInfo.title,
+                                        author: item.items[c].volumeInfo.authors[0],
+                                        description: item.items[c].volumeInfo.description,
+                                        thumbnail: item.items[c].volumeInfo.imageLinks.thumbnail
+                                    }
+                                });
                             }
-                        });
-                    }
 
-                });
+                        }
+
+                    });
+                }
 
             },
             error: function(err) {
@@ -65,7 +98,7 @@ app.message(function(client, action, data) {
 
         });
 
-    } 
+    }
 
 });
 
@@ -82,10 +115,8 @@ app.setResourceHandler(function(request, response) {
             response.reply(imageType, data);
         }
     }
-    
-    scaling.scale(request.id, request.display_width, request.display_height, 'image/jpeg',
-        function(err, data) {
-            sendReply(response, err, 'image/jpeg', data);
-        }
-    );
+
+    scaling.scale(request.id, request.display_width, request.display_height, 'image/jpeg', function(err, data) {
+        sendReply(response, err, 'image/jpeg', data);
+    });
 });

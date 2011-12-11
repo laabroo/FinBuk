@@ -2,6 +2,8 @@ var _ = require('common/util');
 var app = this;
 var ui = require('ui');
 var TextView = ui.TextView;
+var VLayout = require('ui').VLayout;
+var Control = require('ui').Control;
 //var ListView = require('../lib/ListView').ListView;
 var title = null;
 var author = null;
@@ -11,6 +13,7 @@ _.extend(exports, {
 		console.log('View was loaded');
 
 		var view = this;
+		var self = this;
 
 		title = new TextView({
 			'style': {
@@ -30,19 +33,25 @@ _.extend(exports, {
 
 		view.get('textJudul').on('submit', function() {
 			console.log('Data dari textJudul : ' + view.get('textJudul').value());
+			if(view.get('textJudul').value() === ""){
+				console.log('Tidak memasukan Judul.');
+				
+			}
+			else{
 			app.msg('getBuku', {
 				text: view.get('textJudul').value()
 			});
+			}
 		});
 
 		app.on('message', function(action, data) {
-
+		
 			if (action === 'getBuku') {
 				clearInterval(view.intervalId);
 				delete view.intervalId;
 				var i = 1;
 				var temp;
-				
+
 				var dataArray = [data.text.title];
 				dataArray.forEach(function(item) {
 					console.log('Item : ' + item);
@@ -70,14 +79,14 @@ _.extend(exports, {
 							style: {
 								color: 'black',
 								width: 'fill-parent',
-								'background-color': '#5F9EAD'
+								'background-color': '#BDB76B'
 							}
 						});
 
 						temp.on('blur', function() {
 							this.style({
 								'color': 'black',
-								'background-color': '#5F9EAD',
+								'background-color': '#BDB76B',
 								'font-weight': 'normal'
 
 							});
@@ -91,8 +100,8 @@ _.extend(exports, {
 							thumbnail: data.text.thumbnail,
 							description: data.text.description
 						});
-						
-						console.log('data.text.thumbnail : '+data.text.thumbnail);
+
+						console.log('data.text.thumbnail : ' + data.text.thumbnail);
 					});
 					temp.on('focus', function() {
 						this.style({
@@ -105,10 +114,10 @@ _.extend(exports, {
 					i++;
 				});
 				view.focusItem(1);
-				//end 
+
 			}
 
-			console.log(data.text.title, data.text.selfLink, data.text.description, data.text.author, data.text.thumbnail, data.text.smallThumbnail);
+			console.log(data.text.title, data.text.description, data.text.author, data.text.thumbnail);
 
 		});
 
@@ -119,7 +128,8 @@ _.extend(exports, {
 
 	':keypress': function(key) {
 		console.log('Key press: ' + key);
-		this.get('textJudul').emit('keypress', key);
+		var view = this;
+		view.get('textJudul').emit('keypress', key);
 		if (this.index === undefined) {
 			if (this.size() > 0) {
 				this.focusItem(1);
@@ -144,14 +154,6 @@ _.extend(exports, {
 			console.log('back');
 		}
 
-	},
-
-	':active': function() {
-		console.log('View is active');
-	},
-
-	':inactive': function() {
-		console.log('View is inactive');
 	},
 
 	focusItem: function(index) {

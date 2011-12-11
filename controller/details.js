@@ -1,5 +1,6 @@
 var _ = require('common/util');
 var ImageView = require('ui').ImageView;
+var TextView = require('ui').TextView;
 var app = this;
 
 function getTotalHeight(controls) {
@@ -17,92 +18,52 @@ _.extend(exports, {
     ':load': function() {
         var self = this;
         self.clear();
-        app.on('message', function(action, data) {
-            if (action === 'getBuku') {
-                clearInterval(self.intervalId);
-                delete self.intervalId;
-                console.log('Details : ' + data.title);
-                console.log('Details : ' + data.thumbnail);
-                console.log('Details : ' + data.description);
-                self.get('title').label(data.title);
-                self.get('imageBook').resource(data.thumbnail);
-                self.get('description').label(data.description);
-            }
-        });
-
-
     },
-    //':state': function(data) {
-    //    var self = this;
-    //    self.sct = 0;
-    //    self.scrollTop(0);
-    //    self.get('title').label(' ');
-    //    self.get('imageBook').resource(data.imageurl);
-    //    self.get('imageBook').resource(data.text.thumbnail);
-    //    self.get('description').label('Silahkan Tunggu');
-    //    self.intervalId = setInterval(function() {
-    //        if (self.id === undefined) {
-    //            self.id = 1;
-    //        } else if (self.id < 10) {
-    //            self.id++;
-    //        } else {
-    //            self.id = 1;
-    //        }
-    //        var temp = '';
-    //        for (var i = 0; i < self.id; i++) {
-    //            temp = temp + '.';
-    //        }
-    //
-    //        self.get('description').label('Silahkan Tunggu' + temp);
-    //    }, 500);
-    //
-    //    //app.msg('getBuku', {
-    //    //    text: data.text.title
-    //    //});
-    //
-    //
-    //    app.msg('getBuku', {
-    //        action: 'getBuku',
-    //        title: data.text.title,
-    //        thumbnail: data.text.thumbnail,
-    //        description: data.text.description
-    //    });
-    //},
+   
     ':state': function(data) {
         console.log('Thumbnail : ' + data.thumbnail);
         var self = this;
-        var temp;
+        var temp = this;
+        
         self.clear();
-        self.add('thumbnail', new ImageView({
+        temp.clear();
+        self.add('title', new TextView({
             style: {
-                width: 'wrap-content',
+                width: 'fill-parent',
                 height: 'wrap-content',
-                mode: 'centered'
+                'font-weight':'bold',
+                'background-color': '#00BFFF    '
+
             }
         }));
-        //self.add('title', new TextView({
-        //    style: {
-        //        width: 'wrap-content',
-        //        height: 'wrap-content',
-        //        mode: 'centered'
-        //    }
-        //}));
-        //self.add('description', new TextView({
-        //    style: {
-        //        width: 'wrap-content',
-        //        height: 'wrap-content',
-        //        mode: 'centered'
-        //    }
-        //}));
+        self.add('thumbnail', new ImageView({
+            style: {
+                width: 'fill-parent',
+                height: 'wrap-content',
+                mode: 'centered',
+                'background-color' : 'white'
+            }
+        }));
 
-        //self.get('pic').src(app.resourceURL("'"+data.thumbnail+"'"));
+        temp.add('description', new TextView({
+            style: {
+                width: 'fill-parent',
+                height: 'wrap-content'
+
+            }
+        }));
+        var imageUri = data.thumbnail;
+        console.log('imageUri : '+imageUri);
+   
+        //self.get('thumbnail').src(app.resourceURL(imageUri));
         console.log('Details Title : ' + data.title);
         console.log('Details Thumbnail : ' + data.thumbnail);
         console.log('Details Description : ' + data.description);
-        self.get('thumbnail').resource(data.thumbnail);
-        //self.get('title').label(data.title);
-        ////self.get('imageBook').resource(data.thumbnail);
-        //self.get('description').label(data.description);
+        self.get('title').label(data.title);
+        self.get('thumbnail').resource('http://a1.twimg.com/profile_images/1679096374/ggh.jpg');
+        //self.get('thumbnail').resourse(data.thumbnail+' ');
+        //self.get('thumbnail').setResource(data.thumbnail);
+        temp.get('description').label(data.description);
     },
 
 
