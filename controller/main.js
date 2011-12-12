@@ -11,10 +11,8 @@ var author = null;
 _.extend(exports, {
 	':load': function() {
 		console.log('View was loaded');
-
 		var view = this;
 		var self = this;
-
 		title = new TextView({
 			'style': {
 				width: 'fill-parent',
@@ -23,19 +21,16 @@ _.extend(exports, {
 				'font-size': 'small'
 			}
 		});
-
 		author = new TextView({
 			'style': {
 				width: 'fill-parent',
 				height: 'wrap-content'
 			}
 		});
-
 		view.get('textJudul').on('submit', function() {
 			console.log('Data dari textJudul : ' + view.get('textJudul').value());
 			if(view.get('textJudul').value() === ""){
 				console.log('Tidak memasukan Judul.');
-				
 			}
 			else{
 			app.msg('getBuku', {
@@ -43,15 +38,12 @@ _.extend(exports, {
 			});
 			}
 		});
-
 		app.on('message', function(action, data) {
-		
 			if (action === 'getBuku') {
 				clearInterval(view.intervalId);
 				delete view.intervalId;
 				var i = 1;
 				var temp;
-
 				var dataArray = [data.text.title];
 				dataArray.forEach(function(item) {
 					console.log('Item : ' + item);
@@ -63,9 +55,7 @@ _.extend(exports, {
 								width: 'fill-parent',
 								'background-color': 'transparent'
 							}
-
 						});
-
 						temp.on('blur', function() {
 							this.style({
 								'color': 'black',
@@ -82,25 +72,20 @@ _.extend(exports, {
 								'background-color': '#BDB76B'
 							}
 						});
-
 						temp.on('blur', function() {
 							this.style({
 								'color': 'black',
 								'background-color': '#BDB76B',
 								'font-weight': 'normal'
-
 							});
-
 						});
 					}
-
 					temp.on('activate', function() {
 						app.setContent('details', {
 							title: data.text.title,
 							thumbnail: data.text.thumbnail,
 							description: data.text.description
 						});
-
 						console.log('data.text.thumbnail : ' + data.text.thumbnail);
 					});
 					temp.on('focus', function() {
@@ -114,18 +99,10 @@ _.extend(exports, {
 					i++;
 				});
 				view.focusItem(1);
-
 			}
-
 			console.log(data.text.title, data.text.description, data.text.author, data.text.thumbnail);
-
 		});
-
-
-
 	},
-
-
 	':keypress': function(key) {
 		console.log('Key press: ' + key);
 		var view = this;
@@ -153,9 +130,7 @@ _.extend(exports, {
 		} else if (key === 'back') {
 			console.log('back');
 		}
-
 	},
-
 	focusItem: function(index) {
 		if (this.index !== undefined) {
 			this.get(this.index).emit('blur');
