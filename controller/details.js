@@ -19,19 +19,19 @@ _.extend(exports, {
         var self = this;
         self.clear();
     },
-   
+
     ':state': function(data) {
         console.log('Thumbnail : ' + data.thumbnail);
         var self = this;
         var temp = this;
-        
+
         self.clear();
         temp.clear();
         self.add('title', new TextView({
             style: {
                 width: 'fill-parent',
                 height: 'wrap-content',
-                'font-weight':'bold',
+                'font-weight': 'bold',
                 'background-color': '#00BFFF    '
 
             }
@@ -41,7 +41,7 @@ _.extend(exports, {
                 width: 'fill-parent',
                 height: 'wrap-content',
                 mode: 'centered',
-                'background-color' : 'white'
+                'background-color': 'white'
             }
         }));
 
@@ -53,8 +53,8 @@ _.extend(exports, {
             }
         }));
         var imageUri = data.thumbnail;
-        console.log('imageUri : '+imageUri);
-   
+        console.log('imageUri : ' + imageUri);
+
         //self.get('thumbnail').src(app.resourceURL(imageUri));
         console.log('Details Title : ' + data.title);
         console.log('Details Thumbnail : ' + data.thumbnail);
@@ -69,24 +69,61 @@ _.extend(exports, {
 
     ':keypress': function(key) {
         console.log('Key press: ' + key);
-        var self = this;
-        var totalHeight = getTotalHeight(self);
-
-        if (self.sct === undefined) {
-            self.sct = 0;
-            self.scrollTop(0, 1000);
-        } else if (key === 'up' || key === 'down') {
-            var next = self.sct + (key === 'up' ? 50 : -50);
-
-            if (next > 0) {
-                next = 0;
-            } else if (next <= ((totalHeight - self.dimensions().height) * -1)) {
-                next = ((totalHeight - self.dimensions().height) * -1);
+        //var self = this;
+        //var totalHeight = getTotalHeight(self);
+        //
+        //if (self.sct === undefined) {
+        //    self.sct = 0;
+        //    self.scrollTop(0, 1000);
+        //} else if (key === 'up' || key === 'down') {
+        //    var next = self.sct + (key === 'up' ? 50 : -50);
+        //
+        //    if (next > 0) {
+        //        next = 0;
+        //    } else if (next <= ((totalHeight - self.dimensions().height) * -1)) {
+        //        next = ((totalHeight - self.dimensions().height) * -1);
+        //    }
+        //    self.sct = next;
+        //    self.scrollTop(next, 1000);
+        //}
+        if (this.index === undefined) {
+            if (this.size() > 0) {
+                this.focusItem(1);
             }
-            self.sct = next;
-            self.scrollTop(next, 1000);
+        } else if (key === 'up' || key === 'down') {
+            var next = this.index + (key === 'up' ? -1 : 1);
+
+            if (next < 1) {
+                next = 1;
+            } else if (next > (this.size() - 1)) {
+                next = this.size() - 1;
+            }
+
+            if (this.index === next) {
+                return;
+            }
+
+            this.focusItem(next);
+        } else if (key === 'fire') {
+            //this.get(0)[':keypress'](key);
+            this.get(this.index).emit('activate');
+        } else if (key === 'back') {
+            console.log('back');
         }
+    },
+    focusItem: function(index) {
+        if (this.index !== undefined) {
+            this.get(this.index).emit('blur');
+        }
+        this.index = index;
+        this.get(index).emit('focus');
+        if (index === 1) {
+            this.scrollTop(0);
+        }
+        console.log(index);
+        this.scrollTo(index);
     }
+
 
 
 });
